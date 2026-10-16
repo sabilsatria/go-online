@@ -1,0 +1,201 @@
+
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> ☁️Click the Icon☁️</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #5DB7E8, #B8E7FA);
+            color: white;
+            margin: 0;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        h1 {
+            padding-top: 20px;
+        }
+
+        #gameArea {
+            position: relative;
+            width: 100%;
+            height: 55vh;
+        }
+
+        #coin,
+        #Sabit {
+            font-size: 60px;
+            border: none;
+            border-radius: 50%;
+            width: 110px;
+            height: 110px;
+            cursor: pointer;
+            position: absolute;
+            transition: left 0.15s, top 0.15s;
+        }
+
+        #coin {
+            background: #FFD23F;
+            left: 10%;
+            top: 20%;
+        }
+
+        #Sabit {
+            background: #5367B5;
+            left: 60%;
+            top: 50%;
+        }
+
+        #reset {
+            padding: 10px 25px;
+            font-size: 20px;
+            cursor: pointer;
+            border: none;
+            border-radius: 10px;
+            background: white;
+            color: #365A9C;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>☁️ Click the Icon ☁️</h1>
+
+    <h2>Score: <span id="score">0</span></h2>
+    <h2>Time: <span id="time">30</span></h2>
+
+    <div id="gameArea">
+        <button id="coin">🪙</button>
+        <button id="Sabit">🌙</button>
+    </div>
+
+    <button id="reset">🔄 Reset</button>
+
+    <script>
+        // 1. VARIABLE
+        let score = 0;
+        let time = 30;
+        let timer = null;
+        let gameOver = false;
+
+        // 2. DOM
+        const coin = document.getElementById("coin");
+        const Sabit = document.getElementById("Sabit");
+        const reset = document.getElementById("reset");
+        const scoreText = document.getElementById("score");
+        const timeText = document.getElementById("time");
+        const gameArea = document.getElementById("gameArea");
+
+        // 3. TAMBAH SCORE
+        function tambahScore() {
+            if (gameOver) return;
+
+            score += 5;
+            scoreText.textContent = score;
+        }
+
+        // 4. GERAKKAN IKON
+        function moveButton(button) {
+            const maxX = gameArea.clientWidth - button.offsetWidth;
+            const maxY = gameArea.clientHeight - button.offsetHeight;
+
+            const x = Math.random() * Math.max(0, maxX);
+            const y = Math.random() * Math.max(0, maxY);
+
+            button.style.left = x + "px";
+            button.style.top = y + "px";
+        }
+
+        function moveCoin() {
+            moveButton(coin);
+        }
+
+        function moveSabit() {
+            moveButton(Sabit);
+        }
+
+        // 5. AKHIR GAME
+        function endGame() {
+            gameOver = true;
+            clearInterval(timer);
+
+            coin.disabled = true;
+            Sabit.disabled = true;
+
+            alert("Kerja bagus! Time Over 👍 Skor kamu: " + score);
+        }
+
+        // 6. TIMER
+        function startTimer() {
+            clearInterval(timer);
+
+            timer = setInterval(function () {
+                if (gameOver) return;
+
+                time--;
+                timeText.textContent = time;
+
+                if (time <= 0) {
+                    time = 0;
+                    timeText.textContent = time;
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        // 7. RESET GAME
+        function resetGame() {
+            clearInterval(timer);
+
+            score = 0;
+            time = 30;
+            gameOver = false;
+
+            scoreText.textContent = score;
+            timeText.textContent = time;
+
+            coin.disabled = false;
+            Sabit.disabled = false;
+
+            moveCoin();
+            moveSabit();
+
+            startTimer();
+        }
+
+        // 8. EVENT KOIN
+        coin.addEventListener("click", function () {
+            if (gameOver) return;
+
+            tambahScore();
+            moveCoin();
+        });
+
+        // 9. EVENT BULAN
+        Sabit.addEventListener("click", function () {
+            if (gameOver) return;
+
+            tambahScore();
+            moveSabit();
+        });
+
+        // 10. EVENT RESET
+        reset.addEventListener("click", resetGame);
+
+        // 11. MULAI GAME
+        resetGame();
+    </script>
+
+</body>
+</html>
